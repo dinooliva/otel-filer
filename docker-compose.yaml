@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  otel-example-app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+    depends_on:
+      - otel-collector
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    volumes:
+      - ./otel-collector-config.yaml:/otel-local-config.yaml
+      - ./file-exporter:/file-exporter
+    command: ["--config=/otel-local-config.yaml"]
+
